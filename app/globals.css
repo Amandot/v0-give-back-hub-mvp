@@ -123,3 +123,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .page-enter {
+    @apply opacity-0 translate-y-4;
+  }
+
+  .page-enter-active {
+    @apply opacity-100 translate-y-0 transition-all duration-500 ease-out;
+  }
+
+  .page-exit {
+    @apply opacity-100 translate-y-0;
+  }
+
+  .page-exit-active {
+    @apply opacity-0 -translate-y-4 transition-all duration-300 ease-in;
+  }
+
+  /* Smooth hover transitions for interactive elements */
+  .smooth-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  /* Loading animation */
+  .loading-pulse {
+    @apply animate-pulse;
+  }
+}

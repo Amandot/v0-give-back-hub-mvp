@@ -16,19 +16,18 @@ export function DonationForm() {
   const [selectedAmount, setSelectedAmount] = useState<string>("")
   const [customAmount, setCustomAmount] = useState<string>("")
   const [donationType, setDonationType] = useState<string>("one-time")
+  const [donationCategory, setDonationCategory] = useState<string>("money")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const predefinedAmounts = [25, 50, 100, 250, 500, 1000]
+  const predefinedAmounts = [500, 1000, 2500, 5000, 10000, 25000]
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    // In a real app, this would submit to your payment processor
-    alert("Thank you for your donation! This is a demo - no payment was processed.")
+    alert(`Thank you for your ${donationCategory} donation! This is a demo - no payment was processed.`)
     setIsSubmitting(false)
   }
 
@@ -41,74 +40,154 @@ export function DonationForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Donation Type */}
-      <div>
-        <Label className="text-base font-medium">Donation Type</Label>
-        <RadioGroup value={donationType} onValueChange={setDonationType} className="mt-2">
+      {/* Donation Category Selection */}
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <Label className="text-base font-medium">What would you like to donate?</Label>
+        <RadioGroup value={donationCategory} onValueChange={setDonationCategory} className="mt-2">
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="one-time" id="one-time" />
-            <Label htmlFor="one-time">One-time donation</Label>
+            <RadioGroupItem value="money" id="money" />
+            <Label htmlFor="money">Money (₹)</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="monthly" id="monthly" />
-            <Label htmlFor="monthly">Monthly donation</Label>
-            <Badge variant="secondary" className="ml-2">
-              More Impact
-            </Badge>
+            <RadioGroupItem value="items" id="items" />
+            <Label htmlFor="items">Items (Clothes, Books, etc.)</Label>
           </div>
         </RadioGroup>
       </div>
 
-      {/* Amount Selection */}
-      <div>
-        <Label className="text-base font-medium">Donation Amount</Label>
-        <div className="grid grid-cols-3 gap-3 mt-2">
-          {predefinedAmounts.map((amount) => (
-            <Button
-              key={amount}
-              type="button"
-              variant={selectedAmount === amount.toString() ? "default" : "outline"}
-              onClick={() => {
-                setSelectedAmount(amount.toString())
-                setCustomAmount("")
-              }}
-              className="h-12"
-            >
-              ${amount}
-            </Button>
-          ))}
-        </div>
+      {donationCategory === "money" && (
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+          {/* Donation Type */}
+          <div>
+            <Label className="text-base font-medium">Donation Type</Label>
+            <RadioGroup value={donationType} onValueChange={setDonationType} className="mt-2">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="one-time" id="one-time" />
+                <Label htmlFor="one-time">One-time donation</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="monthly" id="monthly" />
+                <Label htmlFor="monthly">Monthly donation</Label>
+                <Badge variant="secondary" className="ml-2">
+                  More Impact
+                </Badge>
+              </div>
+            </RadioGroup>
+          </div>
 
-        <div className="mt-3">
-          <Button
-            type="button"
-            variant={selectedAmount === "custom" ? "default" : "outline"}
-            onClick={() => setSelectedAmount("custom")}
-            className="w-full h-12"
-          >
-            Custom Amount
-          </Button>
-        </div>
+          {/* Amount Selection */}
+          <div>
+            <Label className="text-base font-medium">Donation Amount (₹)</Label>
+            <div className="grid grid-cols-3 gap-3 mt-2">
+              {predefinedAmounts.map((amount) => (
+                <Button
+                  key={amount}
+                  type="button"
+                  variant={selectedAmount === amount.toString() ? "default" : "outline"}
+                  onClick={() => {
+                    setSelectedAmount(amount.toString())
+                    setCustomAmount("")
+                  }}
+                  className="h-12 smooth-hover hover:scale-105"
+                >
+                  ₹{amount.toLocaleString("en-IN")}
+                </Button>
+              ))}
+            </div>
 
-        {selectedAmount === "custom" && (
-          <div className="mt-3">
-            <Label htmlFor="custom-amount">Enter Amount ($)</Label>
-            <Input
-              id="custom-amount"
-              type="number"
-              min="1"
-              step="0.01"
-              placeholder="0.00"
-              value={customAmount}
-              onChange={(e) => setCustomAmount(e.target.value)}
+            <div className="mt-3">
+              <Button
+                type="button"
+                variant={selectedAmount === "custom" ? "default" : "outline"}
+                onClick={() => setSelectedAmount("custom")}
+                className="w-full h-12 smooth-hover hover:scale-105"
+              >
+                Custom Amount
+              </Button>
+            </div>
+
+            {selectedAmount === "custom" && (
+              <div className="mt-3 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                <Label htmlFor="custom-amount">Enter Amount (₹)</Label>
+                <Input
+                  id="custom-amount"
+                  type="number"
+                  min="1"
+                  step="1"
+                  placeholder="0"
+                  value={customAmount}
+                  onChange={(e) => setCustomAmount(e.target.value)}
+                  className="mt-1"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Items donation section */}
+      {donationCategory === "items" && (
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+          <div>
+            <Label className="text-base font-medium">What items are you donating?</Label>
+            <div className="grid grid-cols-2 gap-3 mt-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox id="clothes" />
+                <Label htmlFor="clothes">Clothes</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="books" />
+                <Label htmlFor="books">Books</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="toys" />
+                <Label htmlFor="toys">Toys</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="electronics" />
+                <Label htmlFor="electronics">Electronics</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="furniture" />
+                <Label htmlFor="furniture">Furniture</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="medical" />
+                <Label htmlFor="medical">Medical Supplies</Label>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="item-description">Item Description</Label>
+            <Textarea
+              id="item-description"
+              placeholder="Please describe the items you're donating (condition, quantity, etc.)"
               className="mt-1"
+              rows={4}
             />
           </div>
-        )}
-      </div>
+
+          <div>
+            <Label htmlFor="pickup-preference" className="text-base font-medium">
+              Pickup Preference
+            </Label>
+            <RadioGroup defaultValue="pickup" className="mt-2">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="pickup" id="pickup" />
+                <Label htmlFor="pickup">Schedule pickup from my location</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="dropoff" id="dropoff" />
+                <Label htmlFor="dropoff">I'll drop off at your center</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        </div>
+      )}
 
       {/* Donor Information */}
-      <div className="space-y-4">
+      <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400">
         <Label className="text-base font-medium">Donor Information</Label>
 
         <div className="grid grid-cols-2 gap-4">
@@ -128,29 +207,29 @@ export function DonationForm() {
         </div>
 
         <div>
-          <Label htmlFor="phone">Phone Number</Label>
-          <Input id="phone" type="tel" className="mt-1" />
+          <Label htmlFor="phone">Phone Number *</Label>
+          <Input id="phone" type="tel" required className="mt-1" />
         </div>
 
         <div>
-          <Label htmlFor="address">Address</Label>
-          <Input id="address" className="mt-1" />
+          <Label htmlFor="address">Address *</Label>
+          <Input id="address" required className="mt-1" />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="city">City</Label>
-            <Input id="city" className="mt-1" />
+            <Label htmlFor="city">City *</Label>
+            <Input id="city" required className="mt-1" />
           </div>
           <div>
-            <Label htmlFor="zip">ZIP Code</Label>
-            <Input id="zip" className="mt-1" />
+            <Label htmlFor="zip">PIN Code *</Label>
+            <Input id="zip" required className="mt-1" />
           </div>
         </div>
       </div>
 
       {/* Project Selection */}
-      <div>
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-600">
         <Label htmlFor="project" className="text-base font-medium">
           Designate Your Donation (Optional)
         </Label>
@@ -165,14 +244,12 @@ export function DonationForm() {
         </select>
       </div>
 
-      {/* Message */}
-      <div>
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-700">
         <Label htmlFor="message">Message (Optional)</Label>
         <Textarea id="message" placeholder="Share why you're supporting our mission..." className="mt-1" rows={3} />
       </div>
 
-      {/* Preferences */}
-      <div className="space-y-3">
+      <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-800">
         <div className="flex items-center space-x-2">
           <Checkbox id="updates" />
           <Label htmlFor="updates" className="text-sm">
@@ -194,31 +271,53 @@ export function DonationForm() {
       </div>
 
       {/* Summary */}
-      {getSelectedAmountValue() > 0 && (
-        <Card className="bg-muted/30">
+      {((donationCategory === "money" && getSelectedAmountValue() > 0) || donationCategory === "items") && (
+        <Card className="bg-muted/30 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-900">
           <CardContent className="pt-4">
-            <div className="flex justify-between items-center">
-              <span className="font-medium">{donationType === "monthly" ? "Monthly" : "One-time"} Donation:</span>
-              <span className="text-xl font-bold text-primary">${getSelectedAmountValue().toFixed(2)}</span>
-            </div>
-            {donationType === "monthly" && (
-              <p className="text-sm text-muted-foreground mt-2">
-                Annual impact: ${(getSelectedAmountValue() * 12).toFixed(2)}
-              </p>
+            {donationCategory === "money" ? (
+              <>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">{donationType === "monthly" ? "Monthly" : "One-time"} Donation:</span>
+                  <span className="text-xl font-bold text-primary">
+                    ₹{getSelectedAmountValue().toLocaleString("en-IN")}
+                  </span>
+                </div>
+                {donationType === "monthly" && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Annual impact: ₹{(getSelectedAmountValue() * 12).toLocaleString("en-IN")}
+                  </p>
+                )}
+              </>
+            ) : (
+              <div className="text-center">
+                <span className="font-medium">Item Donation</span>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Thank you for donating items to support our mission!
+                </p>
+              </div>
             )}
           </CardContent>
         </Card>
       )}
 
       {/* Submit Button */}
-      <Button type="submit" size="lg" className="w-full" disabled={!selectedAmount || isSubmitting}>
+      <Button
+        type="submit"
+        size="lg"
+        className="w-full smooth-hover hover:scale-105 hover:shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-500 delay-1000"
+        disabled={(donationCategory === "money" && !selectedAmount) || isSubmitting}
+      >
         {isSubmitting
           ? "Processing..."
-          : `Donate ${getSelectedAmountValue() > 0 ? `$${getSelectedAmountValue().toFixed(2)}` : ""}`}
+          : donationCategory === "money"
+            ? `Donate ${getSelectedAmountValue() > 0 ? `₹${getSelectedAmountValue().toLocaleString("en-IN")}` : ""}`
+            : "Submit Item Donation"}
       </Button>
 
-      <p className="text-xs text-muted-foreground text-center">
-        Your donation is secure and tax-deductible. You will receive a receipt via email.
+      <p className="text-xs text-muted-foreground text-center animate-in fade-in slide-in-from-bottom-4 duration-500 delay-1100">
+        {donationCategory === "money"
+          ? "Your donation is secure and tax-deductible. You will receive a receipt via email."
+          : "We will contact you within 24 hours to coordinate the item pickup or drop-off."}
       </p>
     </form>
   )

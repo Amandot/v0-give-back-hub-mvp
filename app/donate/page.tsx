@@ -1,10 +1,17 @@
+"use client"
+
+import { Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { DonationForm } from "@/components/donation-form"
 import { Heart, Users, Globe, Target } from "lucide-react"
 
-export default function DonatePage() {
+function DonatePageContent() {
+  const searchParams = useSearchParams()
+  const selectedNGO = searchParams.get("ngo")
+
   const impactStats = [
     {
       icon: Users,
@@ -33,12 +40,12 @@ export default function DonatePage() {
   ]
 
   const donationAmounts = [
-    { amount: 25, impact: "Provides clean water for 1 family for a month" },
-    { amount: 50, impact: "Supplies school materials for 5 children" },
-    { amount: 100, impact: "Funds medical care for 10 patients" },
-    { amount: 250, impact: "Supports a teacher's salary for a month" },
-    { amount: 500, impact: "Builds a water well serving 50 families" },
-    { amount: 1000, impact: "Constructs a classroom for 30 students" },
+    { amount: 500, impact: "Provides clean water for 1 family for a month" },
+    { amount: 1000, impact: "Supplies school materials for 5 children" },
+    { amount: 2500, impact: "Funds medical care for 10 patients" },
+    { amount: 5000, impact: "Supports a teacher's salary for a month" },
+    { amount: 10000, impact: "Builds a water well serving 50 families" },
+    { amount: 25000, impact: "Constructs a classroom for 30 students" },
   ]
 
   return (
@@ -75,13 +82,15 @@ export default function DonatePage() {
           <div>
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl">Make a Donation</CardTitle>
+                <CardTitle className="text-2xl">{selectedNGO ? "Support This NGO" : "Make a Donation"}</CardTitle>
                 <p className="text-muted-foreground">
-                  Choose an amount or enter a custom donation. All donations are secure and tax-deductible.
+                  {selectedNGO
+                    ? "Your donation will directly support this NGO's important work in Mumbai."
+                    : "Choose an amount or enter a custom donation. All donations are secure and tax-deductible."}
                 </p>
               </CardHeader>
               <CardContent>
-                <DonationForm />
+                <DonationForm selectedNGO={selectedNGO || undefined} />
               </CardContent>
             </Card>
           </div>
@@ -96,7 +105,7 @@ export default function DonatePage() {
                     <div>
                       <div className="flex items-center gap-3 mb-2">
                         <Badge variant="secondary" className="text-lg font-bold">
-                          ${donation.amount}
+                          ₹{donation.amount}
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">{donation.impact}</p>
@@ -179,5 +188,13 @@ export default function DonatePage() {
         </div>
       </div>
     </main>
+  )
+}
+
+export default function DonatePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DonatePageContent />
+    </Suspense>
   )
 }

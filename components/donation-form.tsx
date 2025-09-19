@@ -11,13 +11,51 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { MapPin, Users } from "lucide-react"
 
-export function DonationForm() {
+const ngoData = {
+  1: {
+    name: "Mumbai Education Foundation",
+    location: "Dharavi, Mumbai",
+    beneficiaries: "5,000+ children",
+    urgentNeeds: ["Books", "Stationery", "Computers"],
+    category: "Education",
+  },
+  2: {
+    name: "Clean Water Mumbai",
+    location: "Bandra East, Mumbai",
+    beneficiaries: "15,000+ families",
+    urgentNeeds: ["Water Filters", "Pipes", "Funding"],
+    category: "Water & Sanitation",
+  },
+  3: {
+    name: "Mumbai Health Care Initiative",
+    location: "Powai, Mumbai",
+    beneficiaries: "8,000+ patients",
+    urgentNeeds: ["Medical Supplies", "Medicines", "Volunteers"],
+    category: "Healthcare",
+  },
+  4: {
+    name: "Women Empowerment Mumbai",
+    location: "Andheri West, Mumbai",
+    beneficiaries: "3,500+ women",
+    urgentNeeds: ["Sewing Machines", "Training Materials", "Microfinance"],
+    category: "Women Empowerment",
+  },
+}
+
+interface DonationFormProps {
+  selectedNGO?: string
+}
+
+export function DonationForm({ selectedNGO }: DonationFormProps) {
   const [selectedAmount, setSelectedAmount] = useState<string>("")
   const [customAmount, setCustomAmount] = useState<string>("")
   const [donationType, setDonationType] = useState<string>("one-time")
   const [donationCategory, setDonationCategory] = useState<string>("money")
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const ngoInfo = selectedNGO ? ngoData[selectedNGO as keyof typeof ngoData] : null
 
   const predefinedAmounts = [500, 1000, 2500, 5000, 10000, 25000]
 
@@ -27,7 +65,8 @@ export function DonationForm() {
 
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    alert(`Thank you for your ${donationCategory} donation! This is a demo - no payment was processed.`)
+    const ngoMessage = ngoInfo ? ` to ${ngoInfo.name}` : ""
+    alert(`Thank you for your ${donationCategory} donation${ngoMessage}! This is a demo - no payment was processed.`)
     setIsSubmitting(false)
   }
 
@@ -40,6 +79,44 @@ export function DonationForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {ngoInfo && (
+        <Card className="bg-primary/5 border-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <CardContent className="pt-4">
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-primary mb-1">Donating to: {ngoInfo.name}</h3>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    <span>{ngoInfo.location}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Users className="h-3 w-3" />
+                    <span>Serving {ngoInfo.beneficiaries}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Badge variant="outline" className="text-xs">
+                      {ngoInfo.category}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="mt-2">
+                  <p className="text-xs font-medium">Urgent Needs:</p>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {ngoInfo.urgentNeeds.map((need) => (
+                      <Badge key={need} variant="secondary" className="text-xs">
+                        {need}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Donation Category Selection */}
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
         <Label className="text-base font-medium">What would you like to donate?</Label>
@@ -228,46 +305,42 @@ export function DonationForm() {
         </div>
       </div>
 
-      {/* Project Selection */}
+      {/* Project Selection - Modified for NGO context */}
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-600">
         <Label htmlFor="project" className="text-base font-medium">
-          Designate Your Donation (Optional)
+          {ngoInfo ? `Support ${ngoInfo.name}'s Programs` : "Designate Your Donation (Optional)"}
         </Label>
         <select id="project" className="w-full mt-2 p-2 border border-input rounded-md bg-background">
           <option value="">Where needed most</option>
-          <option value="clean-water">Clean Water Initiative</option>
-          <option value="education">Education Support Program</option>
-          <option value="healthcare">Healthcare Access Project</option>
-          <option value="women-empowerment">Women's Empowerment Initiative</option>
-          <option value="agriculture">Sustainable Agriculture Program</option>
-          <option value="youth-skills">Youth Skills Development</option>
+          {ngoInfo ? (
+            <>
+              <option value="urgent-needs">Urgent Needs ({ngoInfo.urgentNeeds.join(", ")})</option>
+              <option value="general-support">General Program Support</option>
+              <option value="infrastructure">Infrastructure Development</option>
+            </>
+          ) : (
+            <>
+              <option value="clean-water">Clean Water Initiative</option>
+              <option value="education">Education Support Program</option>
+              <option value="healthcare">Healthcare Access Project</option>
+              <option value="women-empowerment">Women's Empowerment Initiative</option>
+              <option value="agriculture">Sustainable Agriculture Program</option>
+              <option value="youth-skills">Youth Skills Development</option>
+            </>
+          )}
         </select>
       </div>
 
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-700">
         <Label htmlFor="message">Message (Optional)</Label>
-        <Textarea id="message" placeholder="Share why you're supporting our mission..." className="mt-1" rows={3} />
-      </div>
-
-      <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-800">
-        <div className="flex items-center space-x-2">
-          <Checkbox id="updates" />
-          <Label htmlFor="updates" className="text-sm">
-            Send me updates about the projects I'm supporting
-          </Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Checkbox id="anonymous" />
-          <Label htmlFor="anonymous" className="text-sm">
-            Make this donation anonymous
-          </Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Checkbox id="newsletter" />
-          <Label htmlFor="newsletter" className="text-sm">
-            Subscribe to our newsletter for impact stories and updates
-          </Label>
-        </div>
+        <Textarea
+          id="message"
+          placeholder={
+            ngoInfo ? `Share why you're supporting ${ngoInfo.name}...` : "Share why you're supporting our mission..."
+          }
+          className="mt-1"
+          rows={3}
+        />
       </div>
 
       {/* Summary */}
@@ -287,12 +360,19 @@ export function DonationForm() {
                     Annual impact: ₹{(getSelectedAmountValue() * 12).toLocaleString("en-IN")}
                   </p>
                 )}
+                {ngoInfo && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Supporting {ngoInfo.beneficiaries} through {ngoInfo.name}
+                  </p>
+                )}
               </>
             ) : (
               <div className="text-center">
                 <span className="font-medium">Item Donation</span>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Thank you for donating items to support our mission!
+                  {ngoInfo
+                    ? `Thank you for donating items to ${ngoInfo.name}!`
+                    : "Thank you for donating items to support our mission!"}
                 </p>
               </div>
             )}

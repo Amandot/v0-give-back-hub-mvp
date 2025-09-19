@@ -19,7 +19,7 @@ export default function ProjectsPage() {
       fundingRaised: 35000,
       beneficiaries: 500,
       startDate: "2024-01-15",
-      image: "/clean-water-well-construction-rural-community.jpg",
+      image: "/placeholder-fh7wn.png",
       impact: "15 wells constructed, 500 families with clean water access",
     },
     {
@@ -33,7 +33,7 @@ export default function ProjectsPage() {
       fundingRaised: 45000,
       beneficiaries: 300,
       startDate: "2024-02-01",
-      image: "/school-construction-children-learning-guatemala.jpg",
+      image: "/placeholder-kanys.png",
       impact: "2 schools built, 300 children enrolled, 15 teachers trained",
     },
     {
@@ -48,7 +48,7 @@ export default function ProjectsPage() {
       fundingRaised: 60000,
       beneficiaries: 1200,
       startDate: "2023-09-01",
-      image: "/mobile-health-clinic-medical-care-rural-area.jpg",
+      image: "/placeholder-e5uic.png",
       impact: "3 mobile clinics operational, 1,200 patients treated monthly",
     },
     {
@@ -62,7 +62,7 @@ export default function ProjectsPage() {
       fundingRaised: 12000,
       beneficiaries: 200,
       startDate: "2024-06-01",
-      image: "/women-entrepreneurs-business-training-microfinance.jpg",
+      image: "/placeholder-rzltp.png",
       impact: "Project launching soon - 200 women to receive training and microloans",
     },
     {
@@ -76,7 +76,7 @@ export default function ProjectsPage() {
       fundingRaised: 30000,
       beneficiaries: 150,
       startDate: "2023-03-01",
-      image: "/sustainable-farming-techniques-rural-agriculture.jpg",
+      image: "/placeholder-d44m1.png",
       impact: "150 farmers trained, 40% increase in crop yields, improved food security",
     },
     {
@@ -90,7 +90,7 @@ export default function ProjectsPage() {
       fundingRaised: 28000,
       beneficiaries: 100,
       startDate: "2024-03-01",
-      image: "/youth-vocational-training-skills-development.jpg",
+      image: "/placeholder-uk4io.png",
       impact: "80 youth enrolled, 65% job placement rate for graduates",
     },
   ]

@@ -26,17 +26,17 @@ export default function AboutPage() {
 
   const team = [
     {
-      name: "Sarah Johnson",
+      name: "Priya Sharma",
       role: "Executive Director",
       bio: "15+ years in international development with focus on sustainable community programs.",
     },
     {
-      name: "Michael Chen",
+      name: "Arjun Patel",
       role: "Program Manager",
       bio: "Former Peace Corps volunteer with expertise in water and sanitation projects.",
     },
     {
-      name: "Amara Okafor",
+      name: "Kavya Reddy",
       role: "Community Outreach",
       bio: "Local community leader with deep connections across our target regions.",
     },
@@ -108,7 +108,13 @@ export default function AboutPage() {
                 <CardHeader>
                   <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-4">
                     <img
-                      src={`/smiling-woman-curly-brown-hair-headshot.png?height=96&width=96&query=professional headshot of ${member.name}`}
+                      src={
+                        index === 0
+                          ? "/professional-indian-woman-business-attire-headshot.jpg"
+                          : index === 1
+                            ? "/professional-indian-man-business-suit-headshot.jpg"
+                            : "/professional-indian-woman-traditional-modern-headshot.jpg"
+                      }
                       alt={member.name}
                       className="w-full h-full object-cover rounded-full"
                     />

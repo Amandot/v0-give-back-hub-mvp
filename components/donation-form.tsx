@@ -11,7 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Users } from "lucide-react"
+import { MapPin, Users, Calendar, Clock, Truck, Package } from "lucide-react"
 
 const ngoData = {
   1: {
@@ -53,6 +53,10 @@ export function DonationForm({ selectedNGO }: DonationFormProps) {
   const [customAmount, setCustomAmount] = useState<string>("")
   const [donationType, setDonationType] = useState<string>("one-time")
   const [donationCategory, setDonationCategory] = useState<string>("money")
+  const [pickupPreference, setPickupPreference] = useState<string>("pickup")
+  const [pickupDate, setPickupDate] = useState<string>("")
+  const [pickupTime, setPickupTime] = useState<string>("")
+  const [specialInstructions, setSpecialInstructions] = useState<string>("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const ngoInfo = selectedNGO ? ngoData[selectedNGO as keyof typeof ngoData] : null
@@ -204,7 +208,7 @@ export function DonationForm({ selectedNGO }: DonationFormProps) {
 
       {/* Items donation section */}
       {donationCategory === "items" && (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
           <div>
             <Label className="text-base font-medium">What items are you donating?</Label>
             <div className="grid grid-cols-2 gap-3 mt-2">
@@ -245,21 +249,153 @@ export function DonationForm({ selectedNGO }: DonationFormProps) {
             />
           </div>
 
-          <div>
-            <Label htmlFor="pickup-preference" className="text-base font-medium">
-              Pickup Preference
-            </Label>
-            <RadioGroup defaultValue="pickup" className="mt-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="pickup" id="pickup" />
-                <Label htmlFor="pickup">Schedule pickup from my location</Label>
+          <Card className="border-primary/20 bg-primary/5">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Truck className="h-5 w-5 text-primary" />
+                <Label className="text-base font-medium">Pickup & Drop Services</Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="dropoff" id="dropoff" />
-                <Label htmlFor="dropoff">I'll drop off at your center</Label>
-              </div>
-            </RadioGroup>
-          </div>
+
+              <RadioGroup value={pickupPreference} onValueChange={setPickupPreference} className="space-y-4">
+                <div className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-background/50 transition-colors">
+                  <RadioGroupItem value="pickup" id="pickup" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="pickup" className="font-medium cursor-pointer">
+                      Free Pickup Service
+                    </Label>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      We'll collect items from your doorstep. Available across Mumbai.
+                    </p>
+                    <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Package className="h-3 w-3" />
+                        Free for donations ₹500+
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        24-48 hours
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-background/50 transition-colors">
+                  <RadioGroupItem value="dropoff" id="dropoff" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="dropoff" className="font-medium cursor-pointer">
+                      Drop-off at Center
+                    </Label>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Bring items to our collection centers. Open 9 AM - 6 PM daily.
+                    </p>
+                    <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />5 locations in Mumbai
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        Immediate processing
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-background/50 transition-colors">
+                  <RadioGroupItem value="express" id="express" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="express" className="font-medium cursor-pointer">
+                      Express Pickup
+                    </Label>
+                    <p className="text-sm text-muted-foreground mt-1">Same-day pickup service for urgent donations.</p>
+                    <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Truck className="h-3 w-3" />
+                        ₹100 service fee
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        Same day
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </RadioGroup>
+
+              {(pickupPreference === "pickup" || pickupPreference === "express") && (
+                <div className="mt-6 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Calendar className="h-4 w-4 text-primary" />
+                    <Label className="font-medium">Schedule Pickup</Label>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="pickup-date">Preferred Date</Label>
+                      <Input
+                        id="pickup-date"
+                        type="date"
+                        value={pickupDate}
+                        onChange={(e) => setPickupDate(e.target.value)}
+                        min={new Date().toISOString().split("T")[0]}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="pickup-time">Preferred Time</Label>
+                      <select
+                        id="pickup-time"
+                        value={pickupTime}
+                        onChange={(e) => setPickupTime(e.target.value)}
+                        className="w-full mt-1 p-2 border border-input rounded-md bg-background"
+                      >
+                        <option value="">Select time slot</option>
+                        <option value="9-12">9:00 AM - 12:00 PM</option>
+                        <option value="12-15">12:00 PM - 3:00 PM</option>
+                        <option value="15-18">3:00 PM - 6:00 PM</option>
+                        <option value="18-21">6:00 PM - 9:00 PM</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="special-instructions">Special Instructions</Label>
+                    <Textarea
+                      id="special-instructions"
+                      placeholder="Any specific instructions for our pickup team (building access, contact person, etc.)"
+                      value={specialInstructions}
+                      onChange={(e) => setSpecialInstructions(e.target.value)}
+                      className="mt-1"
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {pickupPreference === "dropoff" && (
+                <div className="mt-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                  <div className="flex items-center gap-2 mb-3">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    <Label className="font-medium">Drop-off Centers</Label>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="p-3 border rounded-lg bg-background/50">
+                      <div className="font-medium text-sm">Bandra Collection Center</div>
+                      <div className="text-xs text-muted-foreground">Hill Road, Bandra West • Open 9 AM - 6 PM</div>
+                    </div>
+                    <div className="p-3 border rounded-lg bg-background/50">
+                      <div className="font-medium text-sm">Andheri Hub</div>
+                      <div className="text-xs text-muted-foreground">SV Road, Andheri West • Open 9 AM - 6 PM</div>
+                    </div>
+                    <div className="p-3 border rounded-lg bg-background/50">
+                      <div className="font-medium text-sm">Powai Center</div>
+                      <div className="text-xs text-muted-foreground">Hiranandani Gardens • Open 9 AM - 6 PM</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       )}
 
@@ -391,13 +527,19 @@ export function DonationForm({ selectedNGO }: DonationFormProps) {
           ? "Processing..."
           : donationCategory === "money"
             ? `Donate ${getSelectedAmountValue() > 0 ? `₹${getSelectedAmountValue().toLocaleString("en-IN")}` : ""}`
-            : "Submit Item Donation"}
+            : pickupPreference === "pickup"
+              ? "Schedule Pickup"
+              : pickupPreference === "express"
+                ? "Book Express Pickup"
+                : "Submit for Drop-off"}
       </Button>
 
       <p className="text-xs text-muted-foreground text-center animate-in fade-in slide-in-from-bottom-4 duration-500 delay-1100">
         {donationCategory === "money"
           ? "Your donation is secure and tax-deductible. You will receive a receipt via email."
-          : "We will contact you within 24 hours to coordinate the item pickup or drop-off."}
+          : pickupPreference === "pickup" || pickupPreference === "express"
+            ? "We will contact you within 2 hours to confirm your pickup appointment."
+            : "Visit any of our collection centers during operating hours. No appointment needed."}
       </p>
     </form>
   )

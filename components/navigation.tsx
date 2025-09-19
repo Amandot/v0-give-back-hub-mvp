@@ -33,6 +33,10 @@ export function Navigation() {
                 Projects
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </Link>
+              <Link href="/services" className="text-foreground hover:text-primary smooth-hover relative group">
+                Services
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+              </Link>
               <Link href="/map" className="text-foreground hover:text-primary smooth-hover relative group">
                 Find NGOs
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
@@ -80,6 +84,13 @@ export function Navigation() {
               onClick={() => setIsOpen(false)}
             >
               Projects
+            </Link>
+            <Link
+              href="/services"
+              className="block px-3 py-2 text-foreground hover:text-primary smooth-hover hover:bg-accent rounded-md"
+              onClick={() => setIsOpen(false)}
+            >
+              Services
             </Link>
             <Link
               href="/map"

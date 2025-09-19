@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Heart, Users, Target, Phone, ExternalLink } from "lucide-react"
 import Link from "next/link"
+import LeafletMap from "@/components/leaflet-map"
 
-// Mock NGO data around Mumbai
 const nearbyNGOs = [
   {
     id: 1,
@@ -15,7 +15,7 @@ const nearbyNGOs = [
     description: "Providing quality education to underprivileged children in Mumbai slums",
     category: "Education",
     location: "Dharavi, Mumbai",
-    coordinates: { lat: 19.043, lng: 72.857 },
+    coordinates: { lat: 19.0433, lng: 72.857 },
     distance: "2.3 km",
     beneficiaries: "5,000+ children",
     contact: {
@@ -73,13 +73,53 @@ const nearbyNGOs = [
     urgentNeeds: ["Sewing Machines", "Training Materials", "Microfinance"],
     image: "/women-entrepreneurs-business-training-microfinance.jpg",
   },
+  {
+    id: 5,
+    name: "Mumbai Street Children Support",
+    description: "Rehabilitation and education programs for street children",
+    category: "Child Welfare",
+    location: "Colaba, Mumbai",
+    coordinates: { lat: 18.9067, lng: 72.8147 },
+    distance: "12.5 km",
+    beneficiaries: "2,000+ children",
+    contact: {
+      phone: "+91 98765 43214",
+      email: "support@streetchildren.org",
+    },
+    urgentNeeds: ["Food", "Clothing", "Educational Materials"],
+    image: "/diverse-children-learning.png",
+  },
+  {
+    id: 6,
+    name: "Mumbai Environmental Action",
+    description: "Beach cleanup and environmental conservation initiatives",
+    category: "Environment",
+    location: "Juhu Beach, Mumbai",
+    coordinates: { lat: 19.1075, lng: 72.8263 },
+    distance: "15.2 km",
+    beneficiaries: "Community-wide impact",
+    contact: {
+      phone: "+91 98765 43215",
+      email: "action@mumbaienv.org",
+    },
+    urgentNeeds: ["Cleanup Equipment", "Volunteers", "Awareness Materials"],
+    image: "/clean-water-well-construction-rural-community.jpg",
+  },
 ]
 
 export default function MapPage() {
   const [selectedNGO, setSelectedNGO] = useState(nearbyNGOs[0])
   const [activeCategory, setActiveCategory] = useState("All")
 
-  const categories = ["All", "Education", "Healthcare", "Water & Sanitation", "Women Empowerment"]
+  const categories = [
+    "All",
+    "Education",
+    "Healthcare",
+    "Water & Sanitation",
+    "Women Empowerment",
+    "Child Welfare",
+    "Environment",
+  ]
 
   const filteredNGOs =
     activeCategory === "All" ? nearbyNGOs : nearbyNGOs.filter((ngo) => ngo.category === activeCategory)
@@ -111,36 +151,7 @@ export default function MapPage() {
                 <CardDescription>Interactive map showing nearby NGOs and their locations</CardDescription>
               </CardHeader>
               <CardContent className="p-0 h-full">
-                <div className="relative h-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                  <div className="text-center space-y-4">
-                    <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
-                      <MapPin className="h-8 w-8 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold text-primary">Mumbai, Maharashtra</h3>
-                      <p className="text-muted-foreground">19.0760° N, 72.8777° E</p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mt-8">
-                      {filteredNGOs.map((ngo, index) => (
-                        <button
-                          key={ngo.id}
-                          onClick={() => setSelectedNGO(ngo)}
-                          className={`p-3 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
-                            selectedNGO.id === ngo.id
-                              ? "border-primary bg-primary/10"
-                              : "border-border hover:border-primary/50"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
-                            <span className="text-sm font-medium">{ngo.name}</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground mt-1">{ngo.distance}</p>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <LeafletMap ngos={filteredNGOs} selectedNGO={selectedNGO} onNGOSelect={setSelectedNGO} />
               </CardContent>
             </Card>
           </div>
